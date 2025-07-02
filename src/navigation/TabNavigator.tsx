@@ -1,15 +1,12 @@
 import React from 'react';
-import { useColorScheme } from 'react-native';
-import {
-  BottomTabNavigationOptions,
-  createBottomTabNavigator,
-} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { RouteProp } from '@react-navigation/native';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { Home, User, Settings } from 'lucide-react-native';
 import { lightColors, darkColors } from '../theme/colors';
+import { useThemeStore } from '../store/themeStore';
 
 export type TabParamList = {
   Home: undefined;
@@ -33,34 +30,30 @@ const getTabIcon = (routeName: keyof TabParamList) => {
 };
 
 const renderTabIcon =
-  (
-    route: RouteProp<TabParamList, keyof TabParamList>,
-    isDark: boolean,
-  ): BottomTabNavigationOptions['tabBarIcon'] =>
-  ({ color, size }) => {
+  (route: RouteProp<TabParamList, keyof TabParamList>) =>
+  ({ color, size }: { color: string; size: number }) => {
     const Icon = getTabIcon(route.name);
     return <Icon color={color} size={size} />;
   };
 
 export default function TabNavigator() {
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
-  const theme = isDark ? darkColors : lightColors;
+  const theme = useThemeStore(state => state.theme); // ✅ from Zustand
+  const colors = theme === 'dark' ? darkColors : lightColors;
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: renderTabIcon(route, isDark),
-        tabBarActiveTintColor: theme.tint,
-        tabBarInactiveTintColor: theme.tabInactive,
+        tabBarIcon: renderTabIcon(route),
+        tabBarActiveTintColor: colors.tint,
+        tabBarInactiveTintColor: colors.tabInactive,
         headerStyle: {
-          backgroundColor: theme.background,
+          backgroundColor: colors.background,
         },
         headerTitleStyle: {
-          color: theme.text,
+          color: colors.text,
         },
         tabBarStyle: {
-          backgroundColor: theme.background,
+          backgroundColor: colors.background,
         },
       })}
     >
