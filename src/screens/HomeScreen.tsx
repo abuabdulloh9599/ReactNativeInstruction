@@ -1,10 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useColorScheme } from 'react-native';
+import { lightColors, darkColors } from '../theme/colors';
 
 export default function HomeScreen() {
+  const scheme = useColorScheme();
+  const theme = scheme === 'dark' ? darkColors : lightColors;
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>🏠 Home Screen</Text>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Text style={[styles.text, { color: theme.text }]}>🏠 Home Screen</Text>
     </View>
   );
 }

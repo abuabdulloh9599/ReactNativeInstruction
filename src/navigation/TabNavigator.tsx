@@ -1,4 +1,5 @@
 import React from 'react';
+import { useColorScheme } from 'react-native';
 import {
   BottomTabNavigationOptions,
   createBottomTabNavigator,
@@ -8,6 +9,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { Home, User, Settings } from 'lucide-react-native';
+import { lightColors, darkColors } from '../theme/colors';
 
 export type TabParamList = {
   Home: undefined;
@@ -33,6 +35,7 @@ const getTabIcon = (routeName: keyof TabParamList) => {
 const renderTabIcon =
   (
     route: RouteProp<TabParamList, keyof TabParamList>,
+    isDark: boolean,
   ): BottomTabNavigationOptions['tabBarIcon'] =>
   ({ color, size }) => {
     const Icon = getTabIcon(route.name);
@@ -40,12 +43,25 @@ const renderTabIcon =
   };
 
 export default function TabNavigator() {
+  const scheme = useColorScheme();
+  const isDark = scheme === 'dark';
+  const theme = isDark ? darkColors : lightColors;
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: renderTabIcon(route),
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: 'gray',
+        tabBarIcon: renderTabIcon(route, isDark),
+        tabBarActiveTintColor: theme.tint,
+        tabBarInactiveTintColor: theme.tabInactive,
+        headerStyle: {
+          backgroundColor: theme.background,
+        },
+        headerTitleStyle: {
+          color: theme.text,
+        },
+        tabBarStyle: {
+          backgroundColor: theme.background,
+        },
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
