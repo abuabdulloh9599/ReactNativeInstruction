@@ -7,6 +7,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import { Home, User, Settings } from 'lucide-react-native';
 import { lightColors, darkColors } from '../theme/colors';
 import { useThemeStore } from '../store/themeStore';
+import { StatusBar } from 'react-native';
 
 export type TabParamList = {
   Home: undefined;
@@ -37,29 +38,34 @@ const renderTabIcon =
   };
 
 export default function TabNavigator() {
-  const theme = useThemeStore(state => state.theme); // ✅ from Zustand
+  const theme = useThemeStore(state => state.theme);
   const colors = theme === 'dark' ? darkColors : lightColors;
+  const barStyle = theme === 'dark' ? 'light-content' : 'dark-content';
 
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: renderTabIcon(route),
-        tabBarActiveTintColor: colors.tint,
-        tabBarInactiveTintColor: colors.tabInactive,
-        headerStyle: {
-          backgroundColor: colors.background,
-        },
-        headerTitleStyle: {
-          color: colors.text,
-        },
-        tabBarStyle: {
-          backgroundColor: colors.background,
-        },
-      })}
-    >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
+    <>
+      <StatusBar backgroundColor={colors.background} barStyle={barStyle} />
+
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: renderTabIcon(route),
+          tabBarActiveTintColor: colors.tint,
+          tabBarInactiveTintColor: colors.tabInactive,
+          headerStyle: {
+            backgroundColor: colors.background,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
+          tabBarStyle: {
+            backgroundColor: colors.background,
+          },
+        })}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+      </Tab.Navigator>
+    </>
   );
 }
