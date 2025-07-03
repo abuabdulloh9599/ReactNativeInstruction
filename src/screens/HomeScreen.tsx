@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  Modal,
 } from 'react-native';
 import { useThemeStore } from '../store/themeStore';
 import { lightColors, darkColors } from '../theme/colors';
@@ -18,6 +19,10 @@ export default function HomeScreen() {
   const colors = theme === 'dark' ? darkColors : lightColors;
 
   const [input, setInput] = useState('');
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editText, setEditText] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
+
   const todos = useTodoStore(state => state.todos);
   const addTodo = useTodoStore(state => state.addTodo);
   const removeTodo = useTodoStore(state => state.removeTodo);
@@ -30,15 +35,18 @@ export default function HomeScreen() {
   };
 
   const handleEdit = (id: string, currentText: string) => {
-    Alert.prompt(
-      'Edit To-Do',
-      '',
-      newText => {
-        if (newText?.trim()) updateTodo(id, newText.trim());
-      },
-      undefined,
-      currentText,
-    );
+    setEditId(id);
+    setEditText(currentText);
+    setModalVisible(true);
+  };
+
+  const confirmEdit = () => {
+    if (editId && editText.trim()) {
+      updateTodo(editId, editText.trim());
+      setEditId(null);
+      setEditText('');
+      setModalVisible(false);
+    }
   };
 
   return (
@@ -56,7 +64,17 @@ export default function HomeScreen() {
             { color: colors.text, borderColor: colors.tint },
           ]}
         />
-        <Button title="Add" onPress={handleAdd} color={colors.tint} />
+        <TouchableOpacity
+          onPress={handleAdd}
+          style={{
+            borderWidth: 1,
+            borderRadius: 8,
+            padding: 20,
+            backgroundColor: colors.tint,
+          }}
+        >
+          <Text style={{ color: colors.text }}>Add</Text>
+        </TouchableOpacity>
       </View>
 
       <FlatList
@@ -82,6 +100,32 @@ export default function HomeScreen() {
           </TouchableOpacity>
         )}
       />
+
+      {/* Edit Modal */}
+      <Modal visible={isModalVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalBox, { backgroundColor: colors.card }]}>
+            <Text style={[styles.editLabel, { color: colors.text }]}>
+              Edit Task
+            </Text>
+            <TextInput
+              value={editText}
+              onChangeText={setEditText}
+              style={[
+                styles.input,
+                styles.modalInput,
+                { color: colors.text, borderColor: colors.tint },
+              ]}
+              placeholder="Edit task"
+              placeholderTextColor={colors.tabInactive}
+            />
+            <View style={styles.modalButtons}>
+              <Button title="Cancel" onPress={() => setModalVisible(false)} />
+              <Button title="Save" onPress={confirmEdit} color={colors.tint} />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -95,11 +139,34 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingVertical: 20,
   },
   taskItem: {
     padding: 12,
     borderRadius: 8,
     marginBottom: 10,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    padding: 30,
+  },
+  modalBox: {
+    borderRadius: 10,
+    padding: 20,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+    marginTop: 10,
+  },
+  editLabel: {
+    marginBottom: 8,
+  },
+  modalInput: {
+    fontSize: 18,
+    height: 48,
   },
 });
