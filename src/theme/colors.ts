@@ -1,13 +1,15 @@
 export const lightColors = {
-  background: '#ffffff',
-  text: '#000000',
+  background: '#fff',
+  text: '#000',
   tint: '#007AFF',
-  tabInactive: '#999999',
+  tabInactive: 'gray',
+  card: '#f2f2f7',
 };
 
 export const darkColors = {
-  background: '#000000',
-  text: '#ffffff',
+  background: '#000',
+  text: '#fff',
   tint: '#0A84FF',
-  tabInactive: '#888888',
+  tabInactive: '#888',
+  card: '#1c1c1e',
 };
