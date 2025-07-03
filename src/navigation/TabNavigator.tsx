@@ -47,6 +47,7 @@ export default function TabNavigator() {
       <StatusBar backgroundColor={colors.background} barStyle={barStyle} />
 
       <Tab.Navigator
+        initialRouteName="Home"
         screenOptions={({ route }) => ({
           tabBarIcon: renderTabIcon(route),
           tabBarActiveTintColor: colors.tint,
