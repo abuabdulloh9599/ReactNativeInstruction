@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface Todo {
   id: string;
@@ -36,6 +37,7 @@ export const useTodoStore = create<TodoState>()(
     }),
     {
       name: 'todo-storage',
+      storage: createJSONStorage(() => AsyncStorage), // ✅ This resolves all TypeScript issues
     },
   ),
 );
