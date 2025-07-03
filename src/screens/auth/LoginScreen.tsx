@@ -6,8 +6,12 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import { Apple, Mail } from 'lucide-react-native';
 import { useAuthStore } from '../../store/authStore';
+import FaceBookIcon from '../../assets/icons/login/facebook.svg';
+import AppleIcon from '../../assets/icons/login/apple.svg';
+import GmailIcon from '../../assets/icons/login/google.svg';
+import NaverIcon from '../../assets/icons/login/naver.svg';
+import KakaoIcon from '../../assets/icons/login/kakao.svg';
 
 export default function LoginScreen() {
   const isIOS = Platform.OS === 'ios';
@@ -20,12 +24,21 @@ export default function LoginScreen() {
       <View style={styles.socialContainer}>
         {isIOS && (
           <TouchableOpacity style={styles.iconButton} onPress={login}>
-            <Apple size={28} color="#000" />
+            <AppleIcon />
           </TouchableOpacity>
         )}
 
         <TouchableOpacity style={styles.iconButton} onPress={login}>
-          <Mail size={28} color="#000" />
+          <GmailIcon />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton} onPress={login}>
+          <FaceBookIcon />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton} onPress={login}>
+          <NaverIcon />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton} onPress={login}>
+          <KakaoIcon />
         </TouchableOpacity>
       </View>
     </View>
@@ -48,8 +61,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   iconButton: {
-    padding: 10,
     borderRadius: 10,
-    backgroundColor: '#eee',
   },
 });
