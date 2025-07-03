@@ -10,7 +10,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>(set => ({
   isAuthenticated: false,
-  hasRegistered: false,
+  hasRegistered: true,
   login: () => set({ isAuthenticated: true }),
   logout: () => set({ isAuthenticated: false }),
   register: () => set({ hasRegistered: true }),
