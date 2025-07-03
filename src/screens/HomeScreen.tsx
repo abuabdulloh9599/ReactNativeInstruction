@@ -17,7 +17,6 @@ import { useTodoStore } from '../store/todoStore';
 export default function HomeScreen() {
   const theme = useThemeStore(state => state.theme);
   const colors = theme === 'dark' ? darkColors : lightColors;
-
   const [input, setInput] = useState('');
   const [editId, setEditId] = useState<string | null>(null);
   const [editText, setEditText] = useState('');
@@ -49,6 +48,12 @@ export default function HomeScreen() {
     }
   };
 
+  const cancelEdit = () => {
+    setEditId(null);
+    setEditText('');
+    setModalVisible(false);
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={[styles.title, { color: colors.text }]}>📋 To-Do List</Text>
@@ -61,19 +66,20 @@ export default function HomeScreen() {
           placeholderTextColor={colors.tabInactive}
           style={[
             styles.input,
-            { color: colors.text, borderColor: colors.tint },
+            {
+              color: colors.text,
+              borderColor: colors.tint,
+              backgroundColor: colors.card,
+            },
           ]}
         />
         <TouchableOpacity
           onPress={handleAdd}
-          style={{
-            borderWidth: 1,
-            borderRadius: 8,
-            padding: 20,
-            backgroundColor: colors.tint,
-          }}
+          style={[styles.addButton, { backgroundColor: colors.tint }]}
         >
-          <Text style={{ color: colors.text }}>Add</Text>
+          <Text style={{ color: colors.background, fontWeight: '600' }}>
+            Add
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -114,14 +120,38 @@ export default function HomeScreen() {
               style={[
                 styles.input,
                 styles.modalInput,
-                { color: colors.text, borderColor: colors.tint },
+                {
+                  color: colors.text,
+                  borderColor: colors.tint,
+                  backgroundColor:
+                    theme === 'dark' ? colors.background : colors.card,
+                  // Ensure text is always visible
+                  textAlignVertical: 'center',
+                },
               ]}
               placeholder="Edit task"
               placeholderTextColor={colors.tabInactive}
+              autoFocus={true}
+              selectTextOnFocus={true}
+              multiline={false}
             />
             <View style={styles.modalButtons}>
-              <Button title="Cancel" onPress={() => setModalVisible(false)} />
-              <Button title="Save" onPress={confirmEdit} color={colors.tint} />
+              <TouchableOpacity
+                onPress={cancelEdit}
+                style={[styles.modalButton, styles.cancelButton]}
+              >
+                <Text style={[styles.buttonText, { color: colors.text }]}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={confirmEdit}
+                style={[styles.modalButton, { backgroundColor: colors.tint }]}
+              >
+                <Text style={[styles.buttonText, { color: colors.background }]}>
+                  Save
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -131,20 +161,44 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
-  inputRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
   input: {
     flex: 1,
     borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    fontSize: 16,
+  },
+  addButton: {
+    borderRadius: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   taskItem: {
-    padding: 12,
+    padding: 16,
     borderRadius: 8,
     marginBottom: 10,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   modalOverlay: {
     flex: 1,
@@ -153,20 +207,43 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   modalBox: {
-    borderRadius: 10,
-    padding: 20,
+    borderRadius: 12,
+    padding: 24,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 10,
-    marginTop: 10,
+    gap: 12,
+    marginTop: 20,
+  },
+  modalButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
   editLabel: {
-    marginBottom: 8,
+    marginBottom: 12,
+    fontSize: 18,
+    fontWeight: '600',
   },
   modalInput: {
-    fontSize: 18,
-    height: 48,
+    fontSize: 12,
+    minHeight: 48,
+    marginBottom: 8,
   },
 });
